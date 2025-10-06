@@ -3,6 +3,7 @@ package com.gora.contractmanagerapi.contract.domain;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNameInvalidSizeException;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
