@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ContractRepository extends JpaRepository<Contract, ContractId> {
 
     Contract save(Contract contract);
+
+    Contract findByName(String name);
 }

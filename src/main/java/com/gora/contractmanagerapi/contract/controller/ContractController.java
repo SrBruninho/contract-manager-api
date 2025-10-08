@@ -28,6 +28,9 @@ public class ContractController implements ContractControllerOpenApi {
     @PostMapping
     public ResponseEntity<ContractId> include(@Valid @RequestBody CreateContractDTO createContractDTO) {
         var contractId = contractService.included(createContractDTO);
-        return ResponseEntity.created(fromPath(ContractController.PATH + "/{id}").build(contractId.asString())).build();
+        return ResponseEntity.created(
+                fromPath(ContractController.PATH + "/{id}")
+                        .build(contractId.asString())
+        ).body(contractId);
     }
 }
