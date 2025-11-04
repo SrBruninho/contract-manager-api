@@ -1,6 +1,7 @@
 package com.gora.contractmanagerapi.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -18,4 +19,25 @@ public class TestUtils {
         String jsonResponse = json.getResponse().getContentAsString();
         return objectMapper.readValue(jsonResponse, clazz);
     }
+
+    public static <T> T convertResultToObject(MvcResult result, Class<T> clazz)
+            throws UnsupportedEncodingException {
+        String json = result.getResponse().getContentAsString();
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while converting Json to " + clazz.getSimpleName(), e);
+        }
+    }
+
+    public static <T> T convertResultToObject(MvcResult result, TypeReference<T> typeReference)
+            throws UnsupportedEncodingException {
+        String json = result.getResponse().getContentAsString();
+        try {
+            return objectMapper.readValue(json, typeReference);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while converting Json to a generic type", e);
+        }
+    }
+
 }

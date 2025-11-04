@@ -3,13 +3,13 @@ package com.gora.contractmanagerapi.contract.domain;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNameInvalidSizeException;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -18,6 +18,7 @@ import org.springframework.lang.NonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Entity
 @Table
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Contract {
 
     private static final int NAME_MIN_SIZE = 1;
@@ -25,6 +26,7 @@ public class Contract {
 
     @Id
     @NonNull
+    @EqualsAndHashCode.Include
     private ContractId contractId;
 
     private String name;

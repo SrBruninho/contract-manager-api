@@ -1,6 +1,7 @@
 package com.gora.contractmanagerapi.contract.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.util.ContractTestFactory;
 import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
@@ -12,6 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.gora.contractmanagerapi.utils.TestUtils.convertResultToObject;
 import static com.gora.contractmanagerapi.utils.TestUtils.getIdFromJson;
 import static com.gora.contractmanagerapi.utils.TestUtils.objectToJson;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,9 +25,6 @@ class ContractControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Test
     @DisplayName("Should include a activated contract")
@@ -37,5 +39,42 @@ class ContractControllerTest extends AbstractIntegrationTest {
         var contractPersisted = super.contractRepository.findByName(contractActivated.getName());
 
         assertEquals(contractPersisted.getContractId(), getIdFromJson(contractSent, ContractId.class));
+    }
+
+    @Test
+    @DisplayName("Should retrieve a contract by id")
+    void shouldRetrieveAContractById() throws Exception {
+        var contract = super.contractRepository.save(ContractTestFactory.oneActiveContract());
+
+        var contractSent =  getIdFromJson(mockMvc.perform(MockMvcRequestBuilders
+                        .get(ContractController.PATH + "/{contractId}", contract.getContractId().asString())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn(), Contract.class);
+
+        assertNotNull(contractSent);
+        assertEquals(contract.getContractId(), contractSent.getContractId());
+        assertEquals(contract.getContractStatus(), contractSent.getContractStatus());
+        assertEquals(contract.getName(), contractSent.getName());
+    }
+
+    @Test
+    @DisplayName("Should retrieve all contracts")
+    void shouldRetrieveAllContractsById() throws Exception {
+        var contractActivated = super.contractRepository.save(ContractTestFactory.oneActiveContract());
+        var contractBlocked = super.contractRepository.save(ContractTestFactory.oneBlockedContract());
+        var contractsPersisted = new ArrayList<>(List.of(contractBlocked, contractActivated));
+
+        var result = mockMvc.perform(MockMvcRequestBuilders
+                        .get(ContractController.PATH)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        var contracts = convertResultToObject(result, new TypeReference<List<Contract>>() {});
+
+        assertFalse(contracts.isEmpty());
+        assertEquals(2, contracts.size());
+        assertTrue(contractsPersisted.containsAll(contracts));
     }
 }
