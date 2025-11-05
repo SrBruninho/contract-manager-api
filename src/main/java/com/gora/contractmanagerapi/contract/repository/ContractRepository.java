@@ -18,4 +18,6 @@ public interface ContractRepository extends JpaRepository<Contract, ContractId> 
     Optional<Contract> findById(ContractId contractId);
 
     List<Contract> findAll();
+
+    void deleteById(ContractId contractId);
 }

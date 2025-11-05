@@ -7,11 +7,9 @@ import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNotFoundException;
 import com.gora.contractmanagerapi.contract.repository.ContractRepository;
-import com.gora.contractmanagerapi.infra.UUIDWrapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,5 +47,9 @@ public class ContractService {
                 .stream()
                 .map(contract -> ContractDTO.of(contract.getContractId(), contract.getName(), contract.getContractStatus()))
                 .toList();
+    }
+
+    public void deleteContract(String contractId) {
+        contractRepository.deleteById(ContractId.from(contractId));
     }
 }

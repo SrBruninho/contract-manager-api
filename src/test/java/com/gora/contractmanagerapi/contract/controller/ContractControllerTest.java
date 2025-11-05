@@ -8,6 +8,7 @@ import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -76,5 +77,19 @@ class ContractControllerTest extends AbstractIntegrationTest {
         assertFalse(contracts.isEmpty());
         assertEquals(2, contracts.size());
         assertTrue(contractsPersisted.containsAll(contracts));
+    }
+
+    @Test
+    @DisplayName("Should delete a contract by Id")
+    void shouldDeleteAContractById() throws Exception {
+        var contractPersisted = super.contractRepository.save(ContractTestFactory.oneActiveContract());
+
+        var result = mockMvc.perform(MockMvcRequestBuilders
+                        .delete(ContractController.PATH + "/{contractId}", contractPersisted.getContractId().asString())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andReturn();
+
+        assertEquals(result.getResponse().getStatus(), HttpStatus.NO_CONTENT.value());
     }
 }

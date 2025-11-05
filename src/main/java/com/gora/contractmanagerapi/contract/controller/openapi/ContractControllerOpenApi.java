@@ -17,4 +17,6 @@ public interface ContractControllerOpenApi {
     ResponseEntity<ContractDTO> getContractById(@PathVariable("contractId") String contractId);
 
     ResponseEntity<List<ContractDTO>> getAllContracts();
+
+    ResponseEntity<Void> deleteContract(@PathVariable("contractId") String contractId);
 }

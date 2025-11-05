@@ -8,6 +8,7 @@ import com.gora.contractmanagerapi.contract.service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,12 @@ public class ContractController implements ContractControllerOpenApi {
                 fromPath(ContractController.PATH + "/{id}")
                         .build(contractId.asString())
         ).body(contractId);
+    }
+
+    @Override
+    @DeleteMapping("/{contractId}")
+    public ResponseEntity<Void> deleteContract(@PathVariable("contractId") String contractId) {
+        contractService.deleteContract(contractId);
+        return ResponseEntity.noContent().build();
     }
 }
