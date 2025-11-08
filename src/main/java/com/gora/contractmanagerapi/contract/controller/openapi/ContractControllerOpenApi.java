@@ -3,6 +3,7 @@ package com.gora.contractmanagerapi.contract.controller.openapi;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
+import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,4 +20,7 @@ public interface ContractControllerOpenApi {
     ResponseEntity<List<ContractDTO>> getAllContracts();
 
     ResponseEntity<Void> deleteContract(@PathVariable("contractId") String contractId);
+
+    ResponseEntity<Void> updateContract(@Valid @RequestBody UpdateContractDTO updateContractDTO);
+
 }

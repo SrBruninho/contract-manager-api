@@ -4,6 +4,7 @@ import com.gora.contractmanagerapi.contract.controller.openapi.ContractControlle
 import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
+import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
 import com.gora.contractmanagerapi.contract.service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,13 @@ public class ContractController implements ContractControllerOpenApi {
                 fromPath(ContractController.PATH + "/{id}")
                         .build(contractId.asString())
         ).body(contractId);
+    }
+
+    @Override
+    @PostMapping("/update")
+    public ResponseEntity<Void> updateContract(@Valid @RequestBody UpdateContractDTO updateContractDTO) {
+        contractService.updateContract(updateContractDTO);
+        return ResponseEntity.ok().build();
     }
 
     @Override

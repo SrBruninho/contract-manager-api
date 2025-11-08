@@ -50,7 +50,10 @@ public class Contract {
     private void validateContract() {
         if (this.name.isEmpty() || this.name.length() > NAME_MAX_SIZE)
             throw new CMAContractNameInvalidSizeException(NAME_MIN_SIZE, NAME_MAX_SIZE);
+    }
 
+    public void updateName(String name){
+        this.name = name;
     }
 
 }

@@ -3,6 +3,7 @@ package com.gora.contractmanagerapi.contract.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
+import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
 import com.gora.contractmanagerapi.contract.util.ContractTestFactory;
 import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +48,7 @@ class ContractControllerTest extends AbstractIntegrationTest {
     void shouldRetrieveAContractById() throws Exception {
         var contract = super.contractRepository.save(ContractTestFactory.oneActiveContract());
 
-        var contractSent =  getIdFromJson(mockMvc.perform(MockMvcRequestBuilders
+        var contractSent = getIdFromJson(mockMvc.perform(MockMvcRequestBuilders
                         .get(ContractController.PATH + "/{contractId}", contract.getContractId().asString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -91,5 +92,23 @@ class ContractControllerTest extends AbstractIntegrationTest {
                 .andReturn();
 
         assertEquals(result.getResponse().getStatus(), HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("Should update a contract")
+    void shouldUpdateAContractById() throws Exception {
+        var contractPersisted = super.contractRepository.save(ContractTestFactory.oneActiveContract());
+        String namePersisted = contractPersisted.getName();
+        var updateContractDTO = new UpdateContractDTO(contractPersisted.getContractId(), "Novo Nome");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ContractController.PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectToJson(updateContractDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        var contractChanged = super.contractRepository.findByName(updateContractDTO.name());
+
+        assertEquals(contractPersisted.getContractId(), contractChanged.getContractId());
+        assertNotEquals(namePersisted, contractChanged.getName());
     }
 }

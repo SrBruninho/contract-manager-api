@@ -14,7 +14,4 @@ public class ContractDTO {
     private ContractId contractId;
     private String name;
     private ContractStatus contractStatus;
-
-
-
 }

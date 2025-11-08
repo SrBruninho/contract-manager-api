@@ -5,6 +5,7 @@ import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
+import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNotFoundException;
 import com.gora.contractmanagerapi.contract.repository.ContractRepository;
 import jakarta.transaction.Transactional;
@@ -51,5 +52,18 @@ public class ContractService {
 
     public void deleteContract(String contractId) {
         contractRepository.deleteById(ContractId.from(contractId));
+    }
+
+    public void updateContract(UpdateContractDTO updateContractDTO) {
+        var contractIdConv = ContractId.from(updateContractDTO.contractId().asString());
+
+        contractRepository
+                .findById(contractIdConv)
+                .ifPresentOrElse(contract ->{
+                    contract.updateName(updateContractDTO.name());
+                    contractRepository.save(contract);
+                }, () -> {
+                    throw new RuntimeException();
+                });
     }
 }
