@@ -2,6 +2,7 @@ package com.gora.contractmanagerapi.contract.service;
 
 import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
+import com.gora.contractmanagerapi.contract.domain.ContractSituation;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
@@ -26,7 +27,6 @@ public class ContractService {
         var contract = Contract
                 .builder()
                 .name(createContractDTO.getName())
-                .contractStatus(ContractStatus.ACTIVE)
                 .build();
 
         contractRepository.save(contract);

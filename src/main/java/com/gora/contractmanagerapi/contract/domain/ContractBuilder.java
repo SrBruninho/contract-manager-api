@@ -1,12 +1,11 @@
 package com.gora.contractmanagerapi.contract.domain;
 
-import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 
 public class ContractBuilder {
 
     protected ContractId contractId;
     protected String name;
-    protected ContractStatus contractStatus;
+    protected ContractSituation contractSituation;
 
     public ContractBuilder contractId(ContractId contractId) {
         this.contractId = contractId;
@@ -18,8 +17,8 @@ public class ContractBuilder {
         return this;
     }
 
-    public ContractBuilder contractStatus(ContractStatus contractStatus) {
-        this.contractStatus = contractStatus;
+    public ContractBuilder contractStatus(ContractSituation contractSituation) {
+        this.contractSituation = contractSituation;
         return this;
     }
 

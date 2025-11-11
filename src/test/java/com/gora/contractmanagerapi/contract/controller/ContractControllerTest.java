@@ -3,6 +3,7 @@ package com.gora.contractmanagerapi.contract.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
+import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
 import com.gora.contractmanagerapi.contract.util.ContractTestFactory;
 import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
@@ -29,24 +30,26 @@ class ContractControllerTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("Should include a activated contract")
+    @DisplayName("Should include a draft contract")
     void shouldIncludeAContract() throws Exception {
-        var contractActivated = ContractTestFactory.oneActiveContract();
+        var contractDraft = ContractTestFactory.oneDraftContract();
 
         var contractSent = mockMvc.perform(MockMvcRequestBuilders.post(ContractController.PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectToJson(contractActivated)))
+                        .content(objectToJson(contractDraft)))
                         .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-        var contractPersisted = super.contractRepository.findByName(contractActivated.getName());
+
+        var contractPersisted = super.contractRepository.findByName(contractDraft.getName());
 
         assertEquals(contractPersisted.getContractId(), getIdFromJson(contractSent, ContractId.class));
+        assertEquals(contractPersisted.getContractStatus(), ContractStatus.DRAFT);
     }
 
     @Test
     @DisplayName("Should retrieve a contract by id")
     void shouldRetrieveAContractById() throws Exception {
-        var contract = super.contractRepository.save(ContractTestFactory.oneActiveContract());
+        var contract = super.contractRepository.save(ContractTestFactory.oneDraftContract());
 
         var contractSent = getIdFromJson(mockMvc.perform(MockMvcRequestBuilders
                         .get(ContractController.PATH + "/{contractId}", contract.getContractId().asString())
@@ -101,7 +104,7 @@ class ContractControllerTest extends AbstractIntegrationTest {
         String namePersisted = contractPersisted.getName();
         var updateContractDTO = new UpdateContractDTO(contractPersisted.getContractId(), "Novo Nome");
 
-        mockMvc.perform(MockMvcRequestBuilders.post(ContractController.PATH + "/update")
+        mockMvc.perform(MockMvcRequestBuilders.put(ContractController.PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectToJson(updateContractDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
