@@ -2,6 +2,7 @@ package com.gora.contractmanagerapi.contract.domain;
 
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.domain.enums.SituationReason;
+import com.gora.contractmanagerapi.infra.auditing.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ContractSituation {
+public class ContractSituation extends AuditableEntity {
 
     @Id
     private ContractSituationId id;
