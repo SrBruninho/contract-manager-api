@@ -2,8 +2,6 @@ package com.gora.contractmanagerapi.contract.service;
 
 import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
-import com.gora.contractmanagerapi.contract.domain.ContractSituation;
-import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
 import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
@@ -51,7 +49,15 @@ public class ContractService {
     }
 
     public void deleteContract(String contractId) {
-        contractRepository.deleteById(ContractId.from(contractId));
+        var contractIdConv = ContractId.from(contractId);
+
+        contractRepository
+                .findById(contractIdConv)
+                .ifPresentOrElse(contract -> {
+                    contractRepository.deleteById(contractIdConv);
+                }, () -> {
+                    throw new RuntimeException();
+                });
     }
 
     public void updateContract(UpdateContractDTO updateContractDTO) {

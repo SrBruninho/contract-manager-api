@@ -3,6 +3,7 @@ package com.gora.contractmanagerapi.contract.domain;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.domain.enums.SituationReason;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNameInvalidSizeException;
+import com.gora.contractmanagerapi.infra.auditing.AuditableEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,10 +17,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 import org.springframework.lang.NonNull;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import static com.gora.contractmanagerapi.contract.domain.enums.ContractStatus.B
 @Entity
 @Table
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Contract {
+public class Contract extends AuditableEntity {
 
     private static final int NAME_MIN_SIZE = 1;
     private static final int NAME_MAX_SIZE = 100;
