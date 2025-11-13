@@ -32,6 +32,7 @@ public class JWTTokenProvider {
         return Jwts
                 .builder()
                 .setSubject(userDetails.getUsername())
+                .claim("userId", ((CustomUserDetails) userDetails).getUserId())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiry))
                 .signWith(secretKey, SignatureAlgorithm.HS256)

@@ -49,7 +49,15 @@ public class ContractService {
     }
 
     public void deleteContract(String contractId) {
-        contractRepository.deleteById(ContractId.from(contractId));
+        var contractIdConv = ContractId.from(contractId);
+
+        contractRepository
+                .findById(contractIdConv)
+                .ifPresentOrElse(contract -> {
+                    contractRepository.deleteById(contractIdConv);
+                }, () -> {
+                    throw new RuntimeException();
+                });
     }
 
     public void updateContract(UpdateContractDTO updateContractDTO) {
