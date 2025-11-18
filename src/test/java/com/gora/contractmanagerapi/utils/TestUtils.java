@@ -2,6 +2,7 @@ package com.gora.contractmanagerapi.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -38,6 +39,17 @@ public class TestUtils {
         } catch (Exception e) {
             throw new RuntimeException("Error while converting Json to a generic type", e);
         }
+    }
+
+    public static JsonNode removeEmbedded(String json, String modelListName) throws JsonProcessingException {
+        return objectMapper
+                .readTree(json)
+                .path("_embedded")
+                .path(modelListName);
+    }
+
+    public static ObjectMapper getObjectMapper(){
+        return objectMapper;
     }
 
 }

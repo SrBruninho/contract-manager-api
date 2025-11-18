@@ -1,10 +1,10 @@
 package com.gora.contractmanagerapi.contract.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.gora.contractmanagerapi.contract.domain.Contract;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
+import com.gora.contractmanagerapi.contract.hateoas.ContractModel;
 import com.gora.contractmanagerapi.contract.util.ContractTestFactory;
 import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +19,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gora.contractmanagerapi.utils.TestUtils.convertResultToObject;
 import static com.gora.contractmanagerapi.utils.TestUtils.getIdFromJson;
+import static com.gora.contractmanagerapi.utils.TestUtils.getObjectMapper;
 import static com.gora.contractmanagerapi.utils.TestUtils.objectToJson;
+import static com.gora.contractmanagerapi.utils.TestUtils.removeEmbedded;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractControllerTest extends AbstractIntegrationTest {
@@ -55,17 +56,17 @@ class ContractControllerTest extends AbstractIntegrationTest {
                         .get(ContractController.PATH + "/{contractId}", contract.getContractId().asString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn(), Contract.class);
+                .andReturn(), ContractModel.class);
 
         assertNotNull(contractSent);
-        assertEquals(contract.getContractId(), contractSent.getContractId());
-        assertEquals(contract.getContractStatus(), contractSent.getContractStatus());
+        assertEquals(contract.getContractId().asString(), contractSent.getContractId());
+        assertEquals(contract.getContractStatus().name(), contractSent.getContractStatus());
         assertEquals(contract.getName(), contractSent.getName());
     }
 
     @Test
     @DisplayName("Should retrieve all contracts")
-    void shouldRetrieveAllContractsById() throws Exception {
+    void shouldRetrieveAllContracts() throws Exception {
         var contractActivated = super.contractRepository.save(ContractTestFactory.oneActiveContract());
         var contractBlocked = super.contractRepository.save(ContractTestFactory.oneBlockedContract());
         var contractsPersisted = new ArrayList<>(List.of(contractBlocked, contractActivated));
@@ -76,11 +77,26 @@ class ContractControllerTest extends AbstractIntegrationTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        var contracts = convertResultToObject(result, new TypeReference<List<Contract>>() {});
+        String json = result.getResponse().getContentAsString();
+
+        List<ContractModel> contracts =
+                getObjectMapper()
+                        .convertValue(removeEmbedded(json,"contractModelList"), new TypeReference<>() {});
+
+        List<String> expectedIds = contracts
+                .stream()
+                .map(ContractModel::getContractId)
+                .toList();
+
+        List<String> persistedIds = contractsPersisted
+                .stream()
+                .map(contract -> contract.getContractId().asString())
+                .toList();
 
         assertFalse(contracts.isEmpty());
         assertEquals(2, contracts.size());
-        assertTrue(contractsPersisted.containsAll(contracts));
+
+        assertTrue(persistedIds.containsAll(expectedIds));
     }
 
     @Test

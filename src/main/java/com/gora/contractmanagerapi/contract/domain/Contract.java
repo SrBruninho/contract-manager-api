@@ -1,7 +1,6 @@
 package com.gora.contractmanagerapi.contract.domain;
 
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
-import com.gora.contractmanagerapi.contract.domain.enums.SituationReason;
 import com.gora.contractmanagerapi.contract.exception.CMAContractNameInvalidSizeException;
 import com.gora.contractmanagerapi.infra.auditing.AuditableEntity;
 import jakarta.persistence.CascadeType;

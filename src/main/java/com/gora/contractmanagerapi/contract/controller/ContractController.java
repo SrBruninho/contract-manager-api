@@ -2,12 +2,14 @@ package com.gora.contractmanagerapi.contract.controller;
 
 import com.gora.contractmanagerapi.contract.controller.openapi.ContractControllerOpenApi;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
-import com.gora.contractmanagerapi.contract.dto.ContractDTO;
 import com.gora.contractmanagerapi.contract.dto.CreateContractDTO;
 import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
+import com.gora.contractmanagerapi.contract.hateoas.ContractModel;
+import com.gora.contractmanagerapi.contract.hateoas.ContractModelAssembler;
 import com.gora.contractmanagerapi.contract.service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
@@ -32,15 +32,17 @@ public class ContractController implements ContractControllerOpenApi {
 
     private final ContractService contractService;
 
+    private final ContractModelAssembler contractModelAssembler;
+
     @Override
     @GetMapping("/{contractId}")
-    public ResponseEntity<ContractDTO> getContractById(@PathVariable("contractId") String contractId) {
-        return ResponseEntity.ok(contractService.getContractById(contractId));
+    public ResponseEntity<ContractModel> getContractById(@PathVariable("contractId") String contractId) {
+        return ResponseEntity.ok(contractModelAssembler.toModel(contractService.getContractById(contractId)));
     }
 
     @GetMapping
-    public ResponseEntity<List<ContractDTO>> getAllContracts() {
-        return ResponseEntity.ok(contractService.getContracts());
+    public ResponseEntity<CollectionModel<ContractModel>> getAllContracts() {
+        return ResponseEntity.ok(contractModelAssembler.toCollectionModel(contractService.getContracts()));
     }
 
     @Override
