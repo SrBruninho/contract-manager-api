@@ -21,11 +21,11 @@ public interface UserScopedRepository<T, ID> extends JpaRepository<T, ID>, JpaSp
         if (nonNull(auth) && auth.getPrincipal() instanceof CustomUserDetails userDetails)
             return userDetails.getUsername();
 
-        throw new IllegalStateException("Usuário não autenticado");
+        throw new IllegalStateException("User not authenticated");
     }
 
     /**
-     * Sobrescreve findAll() para aplicar filtro do usuário logado
+     * Override findAll() to apply filter on logged user
      */
     @Override
     default List<T> findAll() {
@@ -33,7 +33,7 @@ public interface UserScopedRepository<T, ID> extends JpaRepository<T, ID>, JpaSp
     }
 
     /**
-     * Sobrescreve findById() para aplicar filtro do usuário logado
+     * Override findById() to apply filter on logged user
      */
     @Override
     default Optional<T> findById(ID id) {
@@ -45,7 +45,7 @@ public interface UserScopedRepository<T, ID> extends JpaRepository<T, ID>, JpaSp
 
 
     /**
-     * Specification que filtra pelo usuário logado
+     * Specification that filter by logged user
      */
     private Specification<T> userScope() {
         String username = getCurrentUsername();
