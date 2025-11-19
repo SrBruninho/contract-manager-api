@@ -56,7 +56,7 @@ public class ContractService {
                 .ifPresentOrElse(contract -> {
                     contractRepository.deleteById(contractIdConv);
                 }, () -> {
-                    throw new RuntimeException();
+                    throw new CMAContractNotFoundException(contractIdConv);
                 });
     }
 
@@ -69,7 +69,7 @@ public class ContractService {
                     contract.updateName(updateContractDTO.name());
                     contractRepository.save(contract);
                 }, () -> {
-                    throw new RuntimeException();
+                    throw new CMAContractNotFoundException(updateContractDTO.contractId());
                 });
     }
 }

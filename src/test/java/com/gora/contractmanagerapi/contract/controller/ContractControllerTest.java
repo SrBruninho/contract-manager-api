@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.gora.contractmanagerapi.contract.domain.ContractId;
 import com.gora.contractmanagerapi.contract.domain.enums.ContractStatus;
 import com.gora.contractmanagerapi.contract.dto.UpdateContractDTO;
+import com.gora.contractmanagerapi.contract.exception.CMAContractNotFoundException;
 import com.gora.contractmanagerapi.contract.hateoas.ContractModel;
 import com.gora.contractmanagerapi.contract.util.ContractTestFactory;
 import com.gora.contractmanagerapi.utils.AbstractIntegrationTest;
@@ -130,4 +131,5 @@ class ContractControllerTest extends AbstractIntegrationTest {
         assertEquals(contractPersisted.getContractId(), contractChanged.getContractId());
         assertNotEquals(namePersisted, contractChanged.getName());
     }
+
 }
